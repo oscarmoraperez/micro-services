@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-sender-canary
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-sender
+  template:
+    metadata:
+      labels:
+        app: ms-sender
+        env: canary
+    spec:
+      containers:
+        - name: micro-sender
+          image: micro-sender
+          env:
+            - name: spring.rabbitmq.host
+              value: rabbitmq.default.svc.cluster.local
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080

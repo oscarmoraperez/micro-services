@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-collector
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ms-collector
+  template:
+    metadata:
+      labels:
+        app: ms-collector
+    spec:
+      containers:
+        - name: micro-collector
+          image: micro-collector
+          env:
+            - name: micro-recipient.url
+              value: ms-recipient.default.svc.cluster.local:8081
+            - name: server.port
+              value: "8082"
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8082
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ms-collector
+spec:
+  selector:
+    app: ms-collector
+  type: LoadBalancer
+  ports:
+    - protocol: "TCP"
+      port: 8082
+      targetPort: 8082

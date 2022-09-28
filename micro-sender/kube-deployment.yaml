@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-sender
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ms-sender
+  template:
+    metadata:
+      labels:
+        app: ms-sender
+    spec:
+      containers:
+        - name: micro-sender
+          image: micro-sender
+          env:
+            - name: spring.rabbitmq.host
+              value: rabbitmq.default.svc.cluster.local
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ms-sender-svc
+spec:
+  selector:
+    app: ms-sender
+  type: LoadBalancer
+  ports:
+    - protocol: "TCP"
+      port: 8080
+      targetPort: 8080

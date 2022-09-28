@@ -1,0 +1,22 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: microsender
+  rabbitmq:
+    host: rabbitmq.default.svc.cluster.local
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true

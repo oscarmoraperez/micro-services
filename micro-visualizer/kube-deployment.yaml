@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-visualizer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-visualizer
+  template:
+    metadata:
+      labels:
+        app: ms-visualizer
+    spec:
+      containers:
+        - name: micro-visualizer
+          image: micro-visualizer
+          env:
+            - name: spring.datasource.url
+              value: jdbc:postgresql://postgres.default.svc.cluster.local/microservices
+            - name: spring.datasource.username
+              value: postgres
+            - name: spring.datasource.password
+              value: postgres
+            - name: server.port
+              value: "8083"
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8083
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ms-visualizer
+spec:
+  selector:
+    app: ms-visualizer
+  type: LoadBalancer
+  ports:
+    - protocol: "TCP"
+      port: 8083
+      targetPort: 8083

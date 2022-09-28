@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-recipient
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-recipient
+  template:
+    metadata:
+      labels:
+        app: ms-recipient
+    spec:
+      containers:
+        - name: micro-recipient
+          image: micro-recipient
+          env:
+            - name: spring.rabbitmq.host
+              value: rabbitmq.default.svc.cluster.local
+            - name: spring.datasource.url
+              value: jdbc:postgresql://postgres.default.svc.cluster.local/microservices
+            - name: spring.datasource.username
+              value: postgres
+            - name: spring.datasource.password
+              value: postgres
+            - name: server.port
+              value: "8081"
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8081
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ms-recipient
+spec:
+  selector:
+    app: ms-recipient
+  type: LoadBalancer
+  ports:
+    - protocol: "TCP"
+      port: 8081
+      targetPort: 8081
