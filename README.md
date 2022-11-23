@@ -1,6 +1,6 @@
 # Java Mentoring Program: Micro services
 
-This maven-based project contains the exercises defined in the 'spring-mvc' module of Java Mentoring program.
+This maven-based project contains an example of multiple microservices ecosystem with monitoring capabilities (with graphana / prometheus) on a kubernetes cluster. 
 
 0) To run the project one have the following options:
 
